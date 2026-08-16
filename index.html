@@ -25,8 +25,18 @@
 
   <!-- AUTH MODAL -->
   <div id="auth-modal" class="modal-overlay" style="display:none;">
-    <div class="modal" style="max-width:520px;">
+    <div class="modal auth-modal-box">
       <h3 id="auth-title">Sign Up / Login</h3>
+
+      <button type="button" class="demo-login-btn">
+        <span class="demo-login-icon">✨</span>
+        <span>
+          <strong>Try the demo</strong>
+          <small>Instant access, no account needed</small>
+        </span>
+      </button>
+      <div class="auth-divider"><span>or use an account</span></div>
+
       <div style="display:flex; gap:8px; margin-bottom:12px;">
         <button id="auth-tab-signup" class="btn-secondary" style="flex:1;">Sign up</button>
         <button id="auth-tab-login" class="btn-secondary" style="flex:1;">Login</button>
@@ -45,10 +55,14 @@
           <label>Confirm password</label>
           <input id="auth-pass-confirm" type="password" class="text-input" required placeholder="Confirm password" />
         </div>
+        <div class="field-group">
+          <label>Access code</label>
+          <input id="auth-access-code" type="text" class="text-input" required placeholder="Provided by your admin" />
+        </div>
         <div style="display:flex; gap:8px; justify-content:flex-end;">
           <button type="submit" class="btn-primary">Create account</button>
         </div>
-        <p id="auth-signup-note" style="color:var(--text-secondary); font-size:13px; margin-top:12px;">Only pre-approved email addresses are allowed. If your email is not accepted you'll see a message.</p>
+        <p id="auth-signup-note" style="color:var(--text-secondary); font-size:13px; margin-top:12px;">Ask your admin for the access code, or use the demo above to look around first.</p>
       </form>
 
       <form id="auth-login-form" style="display:none;">
@@ -63,7 +77,7 @@
         <div style="display:flex; gap:8px; justify-content:flex-end;">
           <button type="submit" class="btn-primary">Login</button>
         </div>
-        <p id="auth-login-note" style="color:var(--text-secondary); font-size:13px; margin-top:12px;">If you previously signed up with an approved email you can login using the password you set.</p>
+        <p id="auth-login-note" style="color:var(--text-secondary); font-size:13px; margin-top:12px;">Accounts are stored on this device only — sign up again if you switch browsers or devices.</p>
       </form>
     </div>
   </div>
@@ -74,6 +88,7 @@
         <img src="assets/logo.png" alt="Taptendance Logo" width="40" height="40">
       </div>
       <div class="header-title">Taptendance</div>
+      <span id="demo-badge" class="demo-badge" style="display:none;">DEMO</span>
       <button id="logout-btn" class="btn-secondary" title="Sign out" style="margin-left:12px; font-size:13px; padding:6px 10px;">Logout</button>
       <button class="theme-toggle" id="theme-toggle">
         <span class="theme-icon">🌙</span>
@@ -131,23 +146,6 @@
               <div id="simple-test-qr"></div>
               <p style="font-size: 10px; margin: 8px 0 0 0; color: #666;">Scan this to test scanner</p>
             </div>
-            <script>
-              window.addEventListener('DOMContentLoaded', () => {
-                setTimeout(() => {
-                  if (typeof QRious !== 'undefined') {
-                    const testQrDiv = document.getElementById('simple-test-qr');
-                    testQrDiv.innerHTML = '';
-                    const qr = new QRious({
-                      element: document.createElement('canvas'),
-                      value: 'HELLO',
-                      size: 120,
-                      level: 'L'
-                    });
-                    testQrDiv.appendChild(qr.canvas);
-                  }
-                }, 500);
-              });
-            </script>
           </div>
         </div>
 
@@ -253,11 +251,11 @@
               </div>
               <div class="field-group">
                 <label>Year</label>
-                <input type="text" class="text-input" id="student-year" placeholder="e.g., 1" required maxlength="1" />
+                <input type="text" class="text-input" id="student-year" placeholder="e.g., 1" required maxlength="2" />
               </div>
               <div class="field-group">
                 <label>Section</label>
-                <input type="text" class="text-input" id="student-section" placeholder="e.g., A" required maxlength="1" />
+                <input type="text" class="text-input" id="student-section" placeholder="e.g., A" required maxlength="4" />
               </div>
               <button type="submit" class="btn-primary btn-large">Generate Attendance QR</button>
             </form>
@@ -297,15 +295,12 @@
         </div>
         <div class="search-group">
           <input type="text" class="search-input" placeholder="Search name or Student No." id="search-records" />
-          <div class="api-note">
-            <small>If there is not or an API key is not set to access Google Sheets.</small>
-            <a href="#" id="set-api-key">Set API key</a>
-          </div>
         </div>
 
-        <!-- NEW: Mark All Out button -->
-        <div style="margin-left:16px; display:flex; align-items:center;">
+        <div class="records-actions">
+          <button id="seed-demo-records" class="btn-secondary" title="Add a few sample records to try the table and export">＋ Sample Data</button>
           <button id="mark-all-out" class="btn-secondary" title="Mark all open records as timed out">Mark All Out</button>
+          <button id="clear-all-records" class="btn-secondary btn-danger" title="Delete all attendance records">Clear All</button>
         </div>
       </div>
       <div class="table-container">
